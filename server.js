@@ -37,9 +37,18 @@ app.use('/upload', (req, res, next) => {
 
 // Existing upload route remains the same
 app.post('/upload', upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).send('Файл не загружен');
+  if (!req.file) return res.status(400).json({ 
+    success: false,
+    error: 'No file uploaded'
+  });
+  
   const fileUrl = `/uploads/${req.file.filename}`;
-  res.send(`<p>Файл загружен: <a href="${fileUrl}" target="_blank">${fileUrl}</a></p>`);
+  res.json({
+    success: true,
+    url: fileUrl,
+    filename: req.file.filename,
+    size: req.file.size
+  });
 });
 
 // Отдача файлов по прямым ссылкам
